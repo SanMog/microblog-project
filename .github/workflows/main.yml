@@ -11,25 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Шаг 1: Скачиваем код
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      # Шаг 2: Запускаем ВСЕ сервисы в фоне
-      # docker-compose сам соберет образ web
-      - name: Start application services
-        run: docker-compose up -d
+      - name: Start services and run tests
+        run: docker-compose up --build --exit-code-from web
 
-      # Шаг 3: Даем сервисам время на "прогрев"
-      - name: Wait for services to be ready
-        run: sleep 10
-
-      # Шаг 4: Запускаем тесты ВНУТРИ веб-контейнера
-      # Команда exec зайдет в работающий контейнер web и выполнит там pytest
-      - name: Run E2E and Unit tests
-        run: docker-compose exec web pytest
-
-      # Шаг 5: Останавливаем сервисы
       - name: Stop services
         if: always()
         run: docker-compose down
