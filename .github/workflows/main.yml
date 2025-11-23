@@ -2,35 +2,34 @@ name: CI for Microblog Project
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main ]
   pull_request:
-    branches: [ master, main ]
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
+      # Шаг 1: Скачиваем код
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install test dependencies
-        run: pip install -r tests/requirements.txt
-
+      # Шаг 2: Запускаем ВСЕ сервисы в фоне
+      # docker-compose сам соберет образ web
       - name: Start application services
         run: docker-compose up -d
 
+      # Шаг 3: Даем сервисам время на "прогрев"
       - name: Wait for services to be ready
         run: sleep 10
 
+      # Шаг 4: Запускаем тесты ВНУТРИ веб-контейнера
+      # Команда exec зайдет в работающий контейнер web и выполнит там pytest
       - name: Run E2E and Unit tests
-        run: pytest
+        run: docker-compose exec web pytest
 
+      # Шаг 5: Останавливаем сервисы
       - name: Stop services
         if: always()
         run: docker-compose down
