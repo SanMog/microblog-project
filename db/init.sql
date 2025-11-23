@@ -1,0 +1,6 @@
+-- init.sql
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);

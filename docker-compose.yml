@@ -1,0 +1,34 @@
+# Версия синтаксиса Docker Compose
+version: '3.8'
+
+# Описываем наши сервисы (контейнеры)
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    # ДОБАВЬТЕ ЭТУ СЕКЦИЮ. ОНА ДОЛЖНА БЫТЬ ИДЕНТИЧНА СЕКЦИИ В 'db'.
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=microblog_db
+    command: ["sleep", "infinity"]
+
+  # Второй сервис - база данных PostgreSQL
+  db:
+    image: postgres:13-alpine # Берем готовый официальный образ PostgreSQL
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=microblog_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/ # Сохраняем данные БД между перезапусками
+      - ./db:/docker-entrypoint-initdb.d
+
+# Создаем "том" для постоянного хранения данных БД
+volumes:
+  postgres_data:

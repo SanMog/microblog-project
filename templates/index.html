@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Микроблог</title>
+    <!-- Простые стили, чтобы страница выглядела аккуратнее -->
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 20px; background-color: #f4f4f4; }
+        h1 { color: #333; }
+        .post { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background-color: #fff; border-radius: 5px; }
+        .post small { color: #888; }
+        textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+        input[type="submit"] { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>Микроблог на Flask и Docker</h1>
+    <hr>
+
+    <!-- Форма для добавления нового поста -->
+    <form method="post">
+        <h3>Новый пост:</h3>
+        <textarea name="content" rows="3" placeholder="Что у вас нового?"></textarea>
+        <br>
+        <input type="submit" value="Добавить">
+    </form>
+    <hr>
+
+    <h2>Все посты:</h2>
+
+    <!-- "Волшебная" часть: Цикл для отображения постов -->
+    {% for post in posts %}
+        <div class="post">
+            <p>{{ post[0] }}</p> <!-- Выводим текст поста -->
+            <small>Опубликовано: {{ post[1].strftime('%Y-%m-%d %H:%M') }}</small> <!-- Форматируем дату -->
+        </div>
+    {% else %}
+        <p>Здесь пока нет ни одного поста. Будьте первым!</p>
+    {% endfor %}
+
+</body>
+</html>
